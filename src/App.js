@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
+import Chatbot from "./components/chatbot";
+
 
 // To ensure your project runs without any file import errors, all styles for this component
 // are included directly here. This makes the component self-contained and robust.
@@ -20,6 +22,8 @@ const PortfolioStyles = () => (
       --button-bg: #007bff;
       --button-text: #ffffff;
       --button-bg-hover: #0056b3;
+      --cert-glow: rgb(0, 0, 0);
+      --chatbot-glow: rgba(0, 123, 255, 0.45);
     }
 
     html.dark {
@@ -36,7 +40,21 @@ const PortfolioStyles = () => (
       --tag-text: #ced4da;
       --button-bg: #3a9cff;
       --button-bg-hover: #007bff;
+      --cert-glow: rgb(249, 251, 253);
+      --chatbot-glow: rgba(255, 255, 255, 0.45);
     }
+    @keyframes floatchatbot {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
 
     body {
       margin: 0;
@@ -49,17 +67,17 @@ const PortfolioStyles = () => (
     /* --- LAYOUT & COMPONENT STYLES --- */
     .portfolioContainer { max-width: 900px; margin: 0 auto; padding: 1rem 2rem; }
     .header { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 0; }
-    .header h1 { font-size: 1.25rem; font-weight: bold; color: var(--header-text); }
+    .header h1 { font-size: 2.3rem; font-weight: bold; color: var(--header-text); }
     .themeToggleButton { background: none; border: none; padding: 0.5rem; cursor: pointer; border-radius: 9999px; color: var(--text-color); transition: background-color 0.3s ease; }
     .themeToggleButton:hover { background-color: var(--icon-bg); }
     .hero { text-align: center; padding: 5rem 0; }
-    .hero h2 { font-size: 3rem; font-weight: 800; color: var(--header-text); margin-bottom: 1rem; line-height: 1.2; }
+    .hero h2 { font-size: 2.5rem; font-weight: 800; color: var(--header-text); margin-bottom: 1rem; line-height: 1.2; }
     .hero p { max-width: 600px; margin: 0 auto 2rem auto; font-size: 1.25rem; opacity: 0.8; }
     .socialLinks { display: flex; justify-content: center; align-items: center; gap: 1rem; }
     .socialLinks a { display: inline-block; padding: 0.75rem; border-radius: 9999px; background-color: var(--icon-bg); color: var(--text-color); transition: all 0.3s ease; }
     .socialLinks a:hover { background-color: var(--icon-bg-hover); transform: translateY(-3px); }
-    .section { padding: 4rem 0; }
-    .sectionTitle { font-size: 2.5rem; font-weight: bold; text-align: center; color: var(--header-text); margin-bottom: 3rem; }
+    .section { padding: 2.5rem 0; }
+    .sectionTitle { font-size: 2.8rem; font-weight: bold; text-align: center; color: var(--header-text); margin-bottom: 3rem; }
     
     /* Scroll Animation Logic */
     .fadeIn { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
@@ -70,7 +88,7 @@ const PortfolioStyles = () => (
     .skillTag:hover { transform: translateY(-3px); box-shadow: 0 7px 10px var(--shadow-color); }
     .timeline { position: relative; border-left: 2px solid var(--timeline-line); margin-left: 1rem; padding: 1rem 0;}
     .timelineItem { margin-bottom: 2.5rem; margin-left: 2rem; position: relative; }
-    .timelineDot { position: absolute; left: -2.75rem; top: 0.25rem; width: 1.5rem; height: 1.5rem; background-color: var(--background-color); border: 4px solid var(--primary-color); border-radius: 50%; }
+    .timelineDot { position: absolute; left: -3.06rem; top: 0.25rem; width: 1.5rem; height: 1.5rem; background-color: var(--background-color); border: 4px solid var(--primary-color); border-radius: 50%; }
     .timelineItem h4 { font-size: 1.25rem; font-weight: 600; color: var(--header-text); margin-bottom: 0.25rem; }
     .timelineItem time { display: block; font-size: 0.9rem; opacity: 0.7; margin-bottom: 0.5rem; }
     .timelineItem ul { list-style-type: disc; padding-left: 1.25rem; margin-top: 0.5rem; opacity: 0.9; }
@@ -91,6 +109,65 @@ const PortfolioStyles = () => (
     .contactButton:hover { background-color: var(--button-bg-hover); transform: scale(1.05); }
     .footer { text-align: center; padding: 2rem 0; margin-top: 2rem; border-top: 1px solid var(--timeline-line); opacity: 0.7; }
     @media (max-width: 640px) { .hero h2 { font-size: 2.5rem; } }
+
+.certificationsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+@media (min-width: 768px) {
+  .certificationsGrid {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+
+.certificationCard {
+  background-color: var(--card-bg);
+  box-shadow: 0 4px 6px var(--shadow-color);
+  padding: 1.75rem;
+  border-radius: 10px;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+.certificationCard:hover {
+  transform: translateY(-6px);
+  box-shadow:
+    0 0 0 1px var(--cert-glow),
+    0 0 18px var(--cert-glow),
+    0 10px 20px var(--shadow-color);
+}
+    
+.certificationCard:focus-within {
+  box-shadow:
+    0 0 0 2px var(--cert-glow),
+    0 0 22px var(--cert-glow);
+}
+
+
+.certificationCard h4 {
+  font-size: 1.5rem;
+  font-weight: 1000;
+  color: var(--header-text);
+  margin-bottom: 0.25rem;
+}
+
+.certificationProvider {
+  font-size: 0.95rem;
+  opacity: 0.75;
+  margin-bottom: 0.75rem;
+}
+
+.certificationCard ul {
+  padding-left: 1.25rem;
+  margin-top: 0.5rem;
+}
+
+.certificationCard li {
+  margin-bottom: 0.4rem;
+  opacity: 0.9;
+}
+
   `}</style>
 );
 
@@ -174,7 +251,8 @@ export default function App() {
       {
         title: "Task Tracker",
         description: "Built a responsive to-do application with HTML, CSS, and JavaScript, focusing on dynamic DOM manipulation. Engineered a deadline-driven alert system using the Browser Push Notifications API.",
-        tags: ["JavaScript", "HTML5", "CSS3", "Web APIs"]
+        tags: ["JavaScript", "HTML5", "CSS3", "Web APIs"],
+        link: "https://github.com/Anusha-lizzie/TodoApp"
       },
       {
         title: "Firstcry Full Stack Clone",
@@ -184,7 +262,8 @@ export default function App() {
       {
         title: "Machine Learning for Predictive Modeling",
         description: "Completed an industry-focused project applying supervised and unsupervised ML models on IBM Cloud. Built and trained models for predictive analytics, evaluated model accuracy, and optimized performance.",
-        tags: ["Machine Learning", "Python", "IBM Cloud"]
+        tags: ["Machine Learning", "Python", "IBM Cloud"],
+        link: "https://github.com/Anusha-lizzie/IBM_ML"
       }
     ];
     const experiences = [
@@ -209,7 +288,35 @@ export default function App() {
           ]
         }
       ];
-  
+      const certifications = [
+  {
+    role: "Java Full Stack Developer",
+    company: "Wipro TalentNext",
+    date: "May 2024 - September 2024",
+    points: [
+      "Gained hands-on experience in Java Full Stack Development including Java, REST APIs, React.js, HTML, CSS, and JavaScript.",
+      "Developed and deployed full-stack web applications with frontend–backend integration and database management."
+    ]
+  },
+  {
+    role: "SAP ABAP on HANA Training",
+    company: "Udemy",
+    date: "September 2025",
+    points: [
+      "Completed certification covering ABAP programming and optimization on the SAP HANA platform.",
+      "Gained practical knowledge in application development, performance tuning, and real-time data integration."
+    ]
+  },
+  {
+    role: "Gen AI: Beyond the Chatbot",
+    company: "Coursera",
+    date: "September 2025",
+    points: [
+      "Completed Google Cloud GenAI: Beyond the Chatbot certification on Coursera.",
+      "Gained knowledge of foundation models, prompting, and practical Gen AI applications including automation, summarization, and content generation."
+    ]
+  }
+];
     return (
       <>
         <PortfolioStyles />
@@ -256,7 +363,32 @@ export default function App() {
                   ))}
               </div>
             </section>
-    
+
+            <section
+  id="certifications"
+  ref={assignRef("certifications")}
+  className={getSectionClassName("certifications")}
+>
+  <h3 className="sectionTitle">Certifications</h3>
+
+  <div className="certificationsGrid">
+    {certifications.map((cert, index) => (
+      <div key={index} className="certificationCard">
+        <h4>{cert.role}</h4>
+        <div className="certificationProvider">
+          {cert.company} • {cert.date}
+        </div>
+
+        <ul>
+          {cert.points.map((point, i) => (
+            <li key={i}>{point}</li>
+          ))}
+        </ul>
+      </div>
+    ))}
+  </div>
+</section>
+
             <section id="projects" ref={assignRef('projects')} className={getSectionClassName('projects')}>
               <h3 className="sectionTitle">Projects</h3>
               <div className="projectGrid">
@@ -288,6 +420,7 @@ export default function App() {
             <p>&copy; {new Date().getFullYear()} Anusha Mohanty. Coded with passion.</p>
           </footer>
         </div>
+        <Chatbot />
       </>
     );
 }

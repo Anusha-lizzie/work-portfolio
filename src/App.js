@@ -417,7 +417,7 @@ export default function App() {
           </main>
     
           <footer className="footer">
-            <p>&copy; {new Date().getFullYear()} Anusha Mohanty. Coded with passion.</p>
+            <p>&copy; {new Date().getFullYear()} Anusha Mohanty. Digital vibes-where websites move, breathe and glow.</p>
           </footer>
         </div>
         <Chatbot />
